@@ -1,3 +1,7 @@
 {
-    "vtuber_analytics_api_key": "AIzaSyDSg5bCqeIRxdYwCKWy2z4XBwOPjjdSN-E"
+    "vtuber_analytics_api_key": [
+        "AIzaSyDSg5bCqeIRxdYwCKWy2z4XBwOPjjdSN-E",
+        "AIzaSyB4BBeseY59wo6k5ob02incoKc5ZSTFdAc",
+        "AIzaSyDunDPm1_JAcLHaW9vKdBlpVG_N4m8IrGM"
+    ]
 }
