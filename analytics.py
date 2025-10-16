@@ -1,19 +1,27 @@
 from __future__ import annotations
-import csv, time, re, os, sys, json
+import csv, time, re, os, sys, json, logging, traceback
 from urllib.parse import urlparse, parse_qs
 from datetime import datetime, timedelta, timezone
 from typing import List, Dict, Any, Optional, Tuple
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
+
 # ====== 設定（ここだけ編集） ======
-DATE_FROM  = "2025-09-30"   # yyyy-mm-dd（内部で publishedAfter に変換）
-DATE_TO    = "2025-10-06"   # yyyy-mm-dd（当日含む）
+DATE_FROM  = "2025-10-16"   # yyyy-mm-dd（内部で publishedAfter に変換）
+DATE_TO    = "2025-11-16"   # yyyy-mm-dd（当日含む）
 INPUT_CSV  = "vtuber_list.csv"
 OUTPUT_BASENAME = "vtuber_analytics_summary.csv"  # ←常にタイムスタンプ付で保存
 # =================================
 
 JST = timezone(timedelta(hours=9))
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(message)s",
+    stream=sys.stderr,
+)
+logger = logging.getLogger("vtuber")
 
 # ---------- APIキー・クライアントのローテータ ----------
 class ApiKeyRotator:
@@ -22,8 +30,8 @@ class ApiKeyRotator:
         keys = []
         if isinstance(data.get("vtuber_analytics_api_keys"), list):
             keys = [k for k in data["vtuber_analytics_api_keys"] if k]
-        elif data.get("vtuber_analytics_api_key"):
-            keys = [data["vtuber_analytics_api_key"]]
+        elif data.get("vtuber_analytics_api_keys"):
+            keys = [data["vtuber_analytics_api_keys"]]
         if not keys:
             raise RuntimeError("environment.json に API キーが見つかりません")
         self.keys = keys
